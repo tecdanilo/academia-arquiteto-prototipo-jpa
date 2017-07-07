@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,6 +35,8 @@ import javax.persistence.Query;
  * @param <PK> tipo da chave primária da entidade de negócio
  */
 public abstract class DaoSupport<E extends PersistentEntity<PK>, PK extends Serializable> {
+	
+	Logger logger = Logger.getLogger(DaoSupport<PersistentEntity<PK>, Serializable>);
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     protected EntityManager entityManager;
@@ -71,13 +74,14 @@ public abstract class DaoSupport<E extends PersistentEntity<PK>, PK extends Seri
      * @return entidade
      */
     public E findByPrimaryKey(PK pk) {
-        System.out.println("============= Chamando findByPrimarykey ==========");
+        //System.out.println("============= Chamando findByPrimarykey ==========");
+        logger.info("============= Chamando findByPrimarykey ==========");
         if (pk == null) {
             throw new DAOException("A chave primaria não pode ser nula");
         }
         try {
-            System.out.println("EntityManager = " + entityManager);
-            System.out.println("Entity class = " + getEntityClass());
+            logger.info("EntityManager = " + entityManager);
+            logger.info("Entity class = " + getEntityClass());
             return entityManager.find(getEntityClass(), pk);
         } catch (javax.persistence.PersistenceException e) {
             throw new DAOException(e);
